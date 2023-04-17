@@ -1,0 +1,45 @@
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App {
+    width: 800px;
+}
+#root {
+    display: flex;
+    justify-content: center;
+}
+.post {
+    display: flex;
+    margin-top: 15px;
+    border: 2px solid green;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+}
+.post__btn {
+    padding: 10px 30px;
+    background-color: gray;
+    font-size: 16px;
+    border: 2px solid gold;
+    cursor: pointer;
+    color: aliceblue;
+    /* margin-top: 10px;*/
+    border-radius: 20px;
+}
+#content {
+    display: flex;
+    margin-top: 15px;
+    border: 2px solid green;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    width: 400px;
+}
