@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
+import validationSchema from "./validationSchema";
+import validateForm from "./validationForm";
 
 function App() {
     const [firstName, setFirstName] = useState("");
@@ -7,66 +9,32 @@ function App() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [firstNameError, setFirstNameError] = useState("");
-    const [lastNameError, setLastNameError] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const [isValid, setIsValid] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [isFormValid, setIsFormValid] = useState(false);
 
-    useEffect(() => {
-        if (emailError || passwordError || firstNameError || lastNameError)
-            setIsValid(false);
-        else {
-            setIsValid(true);
-        }
-    }, [emailError, passwordError, firstNameError, lastNameError]);
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        const values = { email, password, firstName, lastName, [name]: value };
+        const errors = validateForm(values, validationSchema);
+        setErrors(errors);
 
-    const validateFirstName = (value) => {
-        setFirstName(value);
-        if (!value) {
-            setFirstNameError("First name is required!");
-        } else if (!/^[a-zA-Z]{2,}$/.test(value)) {
-            setFirstNameError(
-                "First name must be at least 2 characters  and contain only letters!"
-            );
-        } else {
-            setFirstNameError("");
-        }
-    };
+        setIsFormValid(Object.values(errors).every((error) => error === ""));
 
-    const validateLastName = (value) => {
-        setLastName(value);
-        if (!value) {
-            setLastNameError("Last name is required!");
-        } else if (!/^[a-zA-Z]{2,}$/.test(value)) {
-            setLastNameError(
-                "Last name must be at least 2 characters  and contain only letters!"
-            );
-        } else {
-            setLastNameError("");
-        }
-    };
-    const validateEmail = (value) => {
-        setEmail(value);
-        if (!value) {
-            setEmailError("Email is required!");
-        } else if (!/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(value)) {
-            setEmailError("Invalid email format!");
-        } else {
-            setEmailError("");
-        }
-    };
-
-    const validatePassword = (value) => {
-        setPassword(value);
-        if (!value) {
-            setPasswordError("Password is required!");
-        } else if (!/^(?=.*\d)(?=.*[A-Z])[a-zA-Z0-9]{6,10}$/.test(value)) {
-            setPasswordError(
-                "Password must be 6-10 characters  and contain  one number and one capital letter!"
-            );
-        } else {
-            setPasswordError("");
+        switch (name) {
+            case "firstName":
+                setFirstName(value);
+                break;
+            case "lastName":
+                setLastName(value);
+                break;
+            case "email":
+                setEmail(value);
+                break;
+            case "password":
+                setPassword(value);
+                break;
+            default:
+                break;
         }
     };
     const handleSubmit = (event) => {
@@ -85,11 +53,11 @@ function App() {
                     className="input"
                     placeholder="Enter your firstname..."
                     value={firstName}
-                    onChange={(e) => validateFirstName(e.target.value)}
+                    onChange={handleInputChange}
                 />
 
-                {firstNameError && (
-                    <span className="error">{firstNameError}</span>
+                {errors.firstName && (
+                    <span className="error">{errors.firstName}</span>
                 )}
 
                 <input
@@ -98,10 +66,10 @@ function App() {
                     className="input"
                     placeholder="Enter your lastname..."
                     value={lastName}
-                    onChange={(e) => validateLastName(e.target.value)}
+                    onChange={handleInputChange}
                 />
-                {lastNameError && (
-                    <span className="error">{lastNameError}</span>
+                {errors.lastName && (
+                    <span className="error">{errors.lastName}</span>
                 )}
 
                 <input
@@ -110,9 +78,9 @@ function App() {
                     className="input"
                     placeholder="Enter your email..."
                     value={email}
-                    onChange={(e) => validateEmail(e.target.value)}
+                    onChange={handleInputChange}
                 />
-                {emailError && <span className="error">{emailError}</span>}
+                {errors.email && <span className="error">{errors.email}</span>}
 
                 <input
                     type="password"
@@ -120,21 +88,21 @@ function App() {
                     className="input"
                     placeholder="Enter your password..."
                     value={password}
-                    onChange={(e) => validatePassword(e.target.value)}
+                    onChange={handleInputChange}
                 />
-                {passwordError && (
-                    <span className="error">{passwordError}</span>
+                {errors.password && (
+                    <span className="error">{errors.password}</span>
                 )}
                 <button
                     className="button"
                     type="submit"
-                    disabled={!isValid}
+                    disabled={!isFormValid}
                     style={{
                         opacity:
-                            !!emailError ||
-                            !!passwordError ||
-                            !!firstNameError ||
-                            !!lastNameError
+                            !!errors.firstName ||
+                            !!errors.lastName ||
+                            !!errors.email ||
+                            !!errors.password
                                 ? 0.5
                                 : 1,
                     }}
